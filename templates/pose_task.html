@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Pose Task: {{ pose_name }}</title>
+</head>
+<body class="bg-dark text-white">
+    <div class="container text-center mt-5">
+        <h1>{{ pose_name | capitalize }} Pose Challenge</h1>
+        <p>You have 30 seconds to complete the pose!</p>
+        <button id="start-task" class="btn btn-primary btn-lg">Start Task</button>
+        <div id="feedback" class="mt-3"></div>
+    </div>
+    <script>
+        document.getElementById('start-task').addEventListener('click', async () => {
+            const response = await fetch('/start_pose', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pose_name: "{{ pose_name }}" })
+            });
+            const data = await response.json();
+            document.getElementById('feedback').innerHTML = `
+                <p>Number of Tries: ${data.num_tries}</p>
+                <p>Average Score: ${data.avg_score.toFixed(2)}</p>
+                <p>Scores: ${data.scores.join(', ')}</p>
+            `;
+        });
+    </script>
+</body>
+</html>
